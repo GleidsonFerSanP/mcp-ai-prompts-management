@@ -1,0 +1,30 @@
+{
+  "name": "mcp-ai-prompts-management",
+  "version": "1.0.0",
+  "description": "MCP server para gerenciar prompts de AI favoritos",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-ai-prompts": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "prompts",
+    "ai",
+    "management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  }
+}

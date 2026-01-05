@@ -1,0 +1,98 @@
+{
+  "documentation": {
+    "arquitetura-do-mcp-ai-prompts-management": {
+      "title": "Arquitetura do MCP AI Prompts Management",
+      "filePath": "docs/mcp-ai-prompts/architecture/mcp-server-architecture.md",
+      "topics": [
+        "mcp-tools",
+        "storage",
+        "architecture",
+        "types"
+      ],
+      "keywords": [
+        "mcp",
+        "server",
+        "architecture",
+        "tools",
+        "storage",
+        "typescript"
+      ],
+      "summary": "Documenta\\u00e7\\u00e3o completa da arquitetura do servidor MCP, incluindo estrutura de m\\u00f3dulos, ferramentas dispon\\u00edveis, padr\\u00f5es de armazenamento e fluxo de dados",
+      "context": "backend",
+      "type": "architecture",
+      "relatedContracts": [
+        "prompt"
+      ],
+      "relatedFeatures": [
+        "feat-1767580429511-a1ney73nj"
+      ],
+      "id": "arquitetura-do-mcp-ai-prompts-management",
+      "createdAt": "2026-01-05T02:35:06.572Z",
+      "lastUpdated": "2026-01-05T02:35:06.572Z",
+      "version": 1
+    },
+    "guia-de-uso-do-mcp-ai-prompts": {
+      "title": "Guia de Uso do MCP AI Prompts",
+      "filePath": "docs/mcp-ai-prompts/guides/user-guide.md",
+      "topics": [
+        "setup",
+        "usage",
+        "examples",
+        "vscode"
+      ],
+      "keywords": [
+        "tutorial",
+        "exemplos",
+        "uso",
+        "guia",
+        "vscode"
+      ],
+      "summary": "Guia completo para usu\\u00e1rios do MCP AI Prompts Management, com instru\\u00e7\\u00f5es de instala\\u00e7\\u00e3o, configura\\u00e7\\u00e3o e exemplos pr\\u00e1ticos de uso",
+      "context": "general",
+      "type": "guide",
+      "relatedContracts": [],
+      "relatedFeatures": [],
+      "id": "guia-de-uso-do-mcp-ai-prompts",
+      "createdAt": "2026-01-05T02:59:52.024Z",
+      "lastUpdated": "2026-01-05T02:59:52.024Z",
+      "version": 1
+    },
+    "roadmap-armazenamento-em-nuvem-e-extens-o-vs-code": {
+      "title": "Roadmap - Armazenamento em Nuvem e Extensão VS Code",
+      "filePath": "docs/mcp-ai-prompts/roadmap/cloud-storage-and-vscode-extension.md",
+      "topics": [
+        "roadmap",
+        "cloud-storage",
+        "vscode-extension",
+        "future-features"
+      ],
+      "keywords": [
+        "roadmap",
+        "cloud-storage",
+        "onedrive",
+        "google-drive",
+        "dropbox",
+        "icloud",
+        "vscode-extension"
+      ],
+      "summary": "Roadmap detalhado das próximas features a serem implementadas: extensão VS Code para interface gráfica e sistema de armazenamento em nuvem configurável com suporte a OneDrive, Google Drive, Dropbox e iCloud Drive.",
+      "context": "general",
+      "type": "guide",
+      "relatedContracts": [],
+      "relatedFeatures": [
+        "feat-1767582626391-lzmj2mlnd",
+        "feat-1767582626411-mfqsr8lw9",
+        "feat-1767582626414-zshotlrpa",
+        "feat-1767582626414-3orkkasc2",
+        "feat-1767582626415-pspldzoep",
+        "feat-1767582626423-ywxfcrgag"
+      ],
+      "id": "roadmap-armazenamento-em-nuvem-e-extens-o-vs-code",
+      "createdAt": "2026-01-05T03:11:19.659Z",
+      "lastUpdated": "2026-01-05T03:11:19.659Z",
+      "version": 1
+    }
+  },
+  "lastUpdated": "2026-01-05T03:11:19.659Z",
+  "version": "1.0.0"
+}

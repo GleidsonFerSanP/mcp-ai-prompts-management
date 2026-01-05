@@ -1,0 +1,19 @@
+{
+  "patterns": {
+    "json-file-based-storage-pattern": {
+      "name": "JSON File-based Storage Pattern",
+      "context": "backend",
+      "description": "Padr\\u00e3o de armazenamento persistente usando arquivos JSON para salvar e carregar dados de forma s\\u00edncrona com o sistema de arquivos",
+      "pattern": "import { readFile, writeFile } from 'fs/promises';\nimport { existsSync } from 'fs';\n\nconst STORAGE_FILE = 'data.json';\n\nasync function loadPrompts() {\n  if (!existsSync(STORAGE_FILE)) return [];\n  const data = await readFile(STORAGE_FILE, 'utf-8');\n  return JSON.parse(data).prompts;\n}\n\nasync function savePrompts(prompts) {\n  await writeFile(STORAGE_FILE, JSON.stringify({ prompts }, null, 2));\n}",
+      "examples": [
+        "const prompts = await loadPrompts(); // Carrega todos os prompts",
+        "await savePrompts(updatedPrompts); // Salva lista completa"
+      ],
+      "occurrences": 1,
+      "id": "json-file-based-storage-pattern",
+      "createdAt": "2026-01-05T02:34:23.988Z"
+    }
+  },
+  "lastUpdated": "2026-01-05T02:34:23.988Z",
+  "version": "1.0.0"
+}

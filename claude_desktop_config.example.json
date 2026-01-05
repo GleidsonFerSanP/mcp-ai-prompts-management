@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "ai-prompts": {
+      "command": "node",
+      "args": [
+        "/Users/gleidsonfersanp/workspace/AI/mcp-ai-prompts-managenment/dist/index.js"
+      ]
+    }
+  }
+}

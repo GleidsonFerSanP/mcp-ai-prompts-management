@@ -1,0 +1,402 @@
+{
+  "features": [
+    {
+      "id": "feat-1767580429511-a1ney73nj",
+      "name": "Gerenciamento de Prompts de AI",
+      "context": "backend",
+      "description": "Sistema completo para gerenciar prompts de AI favoritos através de um servidor MCP, permitindo adicionar, listar, buscar, atualizar e remover prompts com categorização e tags",
+      "businessRules": [
+        "Cada prompt deve ter um ID único gerado automaticamente",
+        "Prompts não podem ter nomes duplicados",
+        "Todos os prompts são salvos persistentemente em JSON",
+        "Suporte a filtros por categoria, tags e busca textual",
+        "Timestamps automáticos de criação e atualização"
+      ],
+      "useCases": [
+        {
+          "name": "Adicionar Prompt Favorito",
+          "description": "Usuário adiciona um novo prompt de AI à sua coleção",
+          "steps": [
+            "Usuário fornece nome, descrição, conteúdo, categoria e tags",
+            "Sistema verifica se já existe prompt com mesmo nome",
+            "Sistema gera ID único e timestamps",
+            "Prompt é salvo no arquivo JSON",
+            "Sistema confirma criação com sucesso"
+          ]
+        },
+        {
+          "name": "Buscar e Usar Prompt",
+          "description": "Usuário busca e obtém conteúdo de um prompt específico",
+          "steps": [
+            "Usuário fornece ID ou nome do prompt",
+            "Sistema localiza o prompt",
+            "Sistema retorna conteúdo completo formatado",
+            "Usuário copia e usa o prompt"
+          ]
+        },
+        {
+          "name": "Listar Prompts Filtrados",
+          "description": "Usuário lista prompts com filtros específicos",
+          "steps": [
+            "Usuário fornece filtros opcionais (categoria, tags, busca)",
+            "Sistema aplica filtros aos prompts salvos",
+            "Sistema retorna lista organizada",
+            "Usuário visualiza prompts disponíveis"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "@modelcontextprotocol/sdk",
+        "typescript",
+        "node:fs/promises"
+      ],
+      "apiEndpoints": [],
+      "status": "completed",
+      "tags": [
+        "mcp-server",
+        "ai-prompts",
+        "storage",
+        "categorization"
+      ],
+      "notes": "",
+      "filePaths": [
+        "src/index.ts",
+        "src/storage.ts",
+        "src/types.ts"
+      ],
+      "createdAt": "2026-01-05T02:33:49.511Z",
+      "updatedAt": "2026-01-05T02:33:49.511Z"
+    },
+    {
+      "id": "feat-1767582626391-lzmj2mlnd",
+      "name": "Extensão VS Code para MCP AI Prompts",
+      "context": "frontend",
+      "description": "Extensão para VS Code que fornece interface gráfica integrada ao editor para gerenciar prompts de AI sem precisar usar linha de comando. Permite adicionar, editar, listar e usar prompts diretamente no VS Code através de comandos, painéis e snippets.",
+      "businessRules": [
+        "A extensão deve se conectar ao servidor MCP automaticamente",
+        "Interface deve estar disponível via Command Palette",
+        "Suporte a snippets para inserir prompts rapidamente",
+        "Visualização em painel lateral dedicado",
+        "Sincronização automática com o servidor MCP",
+        "Notificações de sucesso/erro das operações"
+      ],
+      "useCases": [
+        {
+          "name": "Adicionar Prompt via Interface Gráfica",
+          "description": "Usuário adiciona um novo prompt através de um formulário visual no VS Code",
+          "steps": [
+            "Usuário abre Command Palette (Cmd+Shift+P)",
+            "Seleciona 'AI Prompts: Add New Prompt'",
+            "Preenche formulário com nome, descrição, conteúdo, categoria e tags",
+            "Extensão valida os dados",
+            "Extensão chama o MCP server (add_prompt)",
+            "Mostra notificação de sucesso"
+          ]
+        },
+        {
+          "name": "Navegar Prompts no Sidebar",
+          "description": "Usuário visualiza e navega por seus prompts em um painel lateral",
+          "steps": [
+            "Usuário abre o painel 'AI Prompts' no sidebar",
+            "Extensão lista prompts organizados por categoria",
+            "Usuário pode filtrar por tags ou buscar por nome",
+            "Ao clicar em um prompt, visualiza detalhes",
+            "Pode copiar conteúdo ou inserir no editor"
+          ]
+        },
+        {
+          "name": "Inserir Prompt como Snippet",
+          "description": "Usuário insere rapidamente um prompt no editor",
+          "steps": [
+            "Usuário digita prefixo do snippet (ex: 'prompt-review')",
+            "VS Code mostra autocomplete com prompts disponíveis",
+            "Usuário seleciona o prompt desejado",
+            "Conteúdo do prompt é inserido no cursor"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "@types/vscode",
+        "@modelcontextprotocol/sdk",
+        "vscode-languageclient"
+      ],
+      "apiEndpoints": [],
+      "status": "planning",
+      "tags": [
+        "vscode-extension",
+        "ui",
+        "integration",
+        "mcp-client"
+      ],
+      "notes": "Inspirado no projeto ai-project-docs-mcp que já implementa uma extensão VS Code para outro MCP server. Reutilizar padrões e arquitetura similar.",
+      "filePaths": [],
+      "createdAt": "2026-01-05T03:10:26.392Z",
+      "updatedAt": "2026-01-05T03:10:26.392Z"
+    },
+    {
+      "id": "feat-1767582626411-mfqsr8lw9",
+      "name": "Armazenamento em Nuvem - OneDrive",
+      "context": "backend",
+      "description": "Opção de armazenamento que permite ao usuário salvar seus prompts em uma pasta sincronizada do OneDrive, garantindo backup automático e acesso multi-dispositivo. O usuário configura um caminho personalizado que aponta para sua pasta do OneDrive.",
+      "businessRules": [
+        "Usuário pode configurar caminho customizado para OneDrive",
+        "Arquivo JSON é salvo na pasta OneDrive especificada",
+        "Sincronização automática pelo cliente OneDrive",
+        "Fallback para armazenamento local se OneDrive não disponível",
+        "Validação de caminho antes de salvar",
+        "Migração de dados existentes para OneDrive"
+      ],
+      "useCases": [
+        {
+          "name": "Configurar OneDrive como Storage",
+          "description": "Usuário configura o MCP para usar OneDrive como storage",
+          "steps": [
+            "Usuário executa comando 'configure_storage'",
+            "Fornece caminho da pasta OneDrive (ex: ~/OneDrive/AIPrompts)",
+            "Sistema valida que o caminho existe e é gravável",
+            "Sistema oferece migrar dados existentes",
+            "Atualiza configuração e passa a usar novo caminho",
+            "Confirma sucesso da configuração"
+          ]
+        },
+        {
+          "name": "Sincronização Multi-Dispositivo",
+          "description": "Usuário acessa mesmos prompts em diferentes computadores",
+          "steps": [
+            "Usuário configura OneDrive em múltiplos dispositivos",
+            "OneDrive sincroniza arquivo prompts-data.json",
+            "Usuário adiciona prompt no computador A",
+            "OneDrive sincroniza mudanças",
+            "Prompt fica disponível automaticamente no computador B"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "node:fs/promises",
+        "node:path",
+        "node:os"
+      ],
+      "apiEndpoints": [],
+      "status": "completed",
+      "tags": [
+        "cloud-storage",
+        "onedrive",
+        "sync",
+        "backup"
+      ],
+      "notes": "OneDriveProvider implementado!\n- Auto-detecção de pasta OneDrive (Windows/macOS)\n- Suporte a múltiplas variantes (Personal, Business)\n- Validação de caminho e permissões\n- Sincronização via cliente OneDrive nativo",
+      "filePaths": [],
+      "createdAt": "2026-01-05T03:10:26.411Z",
+      "updatedAt": "2026-01-05T03:19:05.670Z"
+    },
+    {
+      "id": "feat-1767582626414-zshotlrpa",
+      "name": "Armazenamento em Nuvem - Google Drive",
+      "context": "backend",
+      "description": "Opção de armazenamento via Google Drive File Stream ou backup and sync, permitindo salvar prompts em pasta sincronizada do Google Drive. Similar ao OneDrive, usa pasta local que o cliente Google Drive sincroniza automaticamente.",
+      "businessRules": [
+        "Suporte a Google Drive File Stream e Backup and Sync",
+        "Auto-detecção de pasta Google Drive no sistema",
+        "Validação de disponibilidade do Google Drive",
+        "Sincronização automática pelo cliente Google Drive",
+        "Suporte offline com sincronização posterior"
+      ],
+      "useCases": [
+        {
+          "name": "Auto-Detectar Google Drive",
+          "description": "Sistema detecta automaticamente instalação do Google Drive",
+          "steps": [
+            "Sistema verifica caminhos comuns do Google Drive",
+            "Identifica tipo (File Stream ou Backup and Sync)",
+            "Sugere pasta padrão para usuário",
+            "Usuário confirma ou escolhe pasta customizada",
+            "Configura armazenamento"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "node:fs/promises",
+        "node:path"
+      ],
+      "apiEndpoints": [],
+      "status": "planning",
+      "tags": [
+        "cloud-storage",
+        "google-drive",
+        "sync",
+        "backup"
+      ],
+      "notes": "Caminhos comuns: macOS: ~/Google Drive, Windows: %USERPROFILE%/Google Drive",
+      "filePaths": [],
+      "createdAt": "2026-01-05T03:10:26.414Z",
+      "updatedAt": "2026-01-05T03:10:26.414Z"
+    },
+    {
+      "id": "feat-1767582626414-3orkkasc2",
+      "name": "Armazenamento em Nuvem - Dropbox",
+      "context": "backend",
+      "description": "Opção de armazenamento via pasta sincronizada do Dropbox. Usuário pode configurar pasta dentro do Dropbox para salvar prompts com sincronização automática entre dispositivos.",
+      "businessRules": [
+        "Auto-detecção de pasta Dropbox no sistema",
+        "Sincronização automática via cliente Dropbox",
+        "Suporte a Dropbox Business e pessoal",
+        "Validação de quota disponível antes de salvar"
+      ],
+      "useCases": [
+        {
+          "name": "Configurar Dropbox Storage",
+          "description": "Usuário configura Dropbox como local de armazenamento",
+          "steps": [
+            "Sistema auto-detecta pasta Dropbox",
+            "Sugere criar subpasta 'AIPrompts'",
+            "Usuário confirma configuração",
+            "Sistema migra dados existentes se solicitado",
+            "Ativa sincronização automática"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "node:fs/promises"
+      ],
+      "apiEndpoints": [],
+      "status": "planning",
+      "tags": [
+        "cloud-storage",
+        "dropbox",
+        "sync",
+        "backup"
+      ],
+      "notes": "Caminho padrão: macOS/Linux: ~/Dropbox, Windows: %USERPROFILE%/Dropbox",
+      "filePaths": [],
+      "createdAt": "2026-01-05T03:10:26.414Z",
+      "updatedAt": "2026-01-05T03:10:26.414Z"
+    },
+    {
+      "id": "feat-1767582626415-pspldzoep",
+      "name": "Sistema de Storage Configurável",
+      "context": "backend",
+      "description": "Arquitetura extensível que permite ao usuário escolher e configurar diferentes backends de armazenamento (local, OneDrive, Google Drive, Dropbox, iCloud, etc). Usa padrão Strategy para abstrair implementações específicas.",
+      "businessRules": [
+        "Interface comum para todos os storage backends",
+        "Configuração persistida em arquivo config",
+        "Ferramenta MCP 'configure_storage' para mudança dinâmica",
+        "Validação de disponibilidade do storage antes de usar",
+        "Migração automática entre storages",
+        "Fallback para local se cloud storage falhar"
+      ],
+      "useCases": [
+        {
+          "name": "Listar Storage Providers Disponíveis",
+          "description": "Usuário consulta quais opções de storage estão disponíveis",
+          "steps": [
+            "Usuário chama 'list_storage_providers'",
+            "Sistema verifica cada provider (OneDrive, Google Drive, etc)",
+            "Retorna lista com providers disponíveis no sistema",
+            "Indica qual está configurado atualmente"
+          ]
+        },
+        {
+          "name": "Mudar Storage Provider",
+          "description": "Usuário troca de storage local para OneDrive",
+          "steps": [
+            "Usuário chama 'configure_storage' com provider='onedrive'",
+            "Sistema valida disponibilidade do OneDrive",
+            "Oferece migrar dados existentes",
+            "Copia prompts-data.json para OneDrive",
+            "Atualiza configuração",
+            "Confirma mudança com sucesso"
+          ]
+        },
+        {
+          "name": "Recuperação Automática de Falhas",
+          "description": "Sistema continua funcionando se cloud storage ficar indisponível",
+          "steps": [
+            "Usuário tenta salvar prompt",
+            "Sistema detecta que OneDrive está offline",
+            "Salva temporariamente em cache local",
+            "Notifica usuário sobre modo offline",
+            "Quando OneDrive volta, sincroniza automaticamente"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "node:fs/promises",
+        "node:path",
+        "node:os"
+      ],
+      "apiEndpoints": [],
+      "status": "completed",
+      "tags": [
+        "architecture",
+        "storage",
+        "abstraction",
+        "strategy-pattern"
+      ],
+      "notes": "Implementado com sucesso! \n- StorageProvider interface criada\n- StorageFactory com singleton pattern\n- LocalProvider (mantém compatibilidade)\n- 3 novas ferramentas MCP adicionadas\n- Sistema de migração automática\n- Fallback inteligente para local",
+      "filePaths": [
+        "src/storage/index.ts",
+        "src/storage/providers/",
+        "src/storage/config.ts"
+      ],
+      "createdAt": "2026-01-05T03:10:26.415Z",
+      "updatedAt": "2026-01-05T03:19:04.712Z"
+    },
+    {
+      "id": "feat-1767582626423-ywxfcrgag",
+      "name": "Armazenamento em Nuvem - iCloud Drive",
+      "context": "backend",
+      "description": "Opção de armazenamento específica para macOS usando iCloud Drive, permitindo sincronização nativa entre dispositivos Apple (Mac, iPad via Código). Prompts ficam disponíveis automaticamente em todos os dispositivos conectados ao mesmo Apple ID.",
+      "businessRules": [
+        "Apenas disponível em macOS",
+        "Auto-detecção de pasta iCloud Drive",
+        "Sincronização nativa via iCloud",
+        "Suporte offline com sync automático quando online",
+        "Verificação de quota iCloud disponível"
+      ],
+      "useCases": [
+        {
+          "name": "Configurar iCloud Drive Storage",
+          "description": "Usuário macOS configura iCloud como storage",
+          "steps": [
+            "Sistema verifica se está em macOS",
+            "Detecta pasta ~/Library/Mobile Documents/com~apple~CloudDocs",
+            "Cria subpasta AIPrompts no iCloud",
+            "Migra dados existentes",
+            "Ativa sincronização automática"
+          ]
+        }
+      ],
+      "relatedContracts": [],
+      "relatedPatterns": [],
+      "dependencies": [
+        "node:fs/promises",
+        "node:os"
+      ],
+      "apiEndpoints": [],
+      "status": "planning",
+      "tags": [
+        "cloud-storage",
+        "icloud",
+        "macos",
+        "apple",
+        "sync"
+      ],
+      "notes": "Caminho iCloud: ~/Library/Mobile Documents/com~apple~CloudDocs/. Requer macOS com iCloud ativado.",
+      "filePaths": [],
+      "createdAt": "2026-01-05T03:10:26.423Z",
+      "updatedAt": "2026-01-05T03:10:26.423Z"
+    }
+  ]
+}

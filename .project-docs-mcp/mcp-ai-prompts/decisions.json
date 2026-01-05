@@ -1,0 +1,61 @@
+{
+  "decisions": [
+    {
+      "title": "Armazenamento em JSON File ao inv\\u00e9s de Database",
+      "context": "O MCP server precisa armazenar prompts de forma persistente entre sess\\u00f5es, mas deve ser simples de usar e n\\u00e3o exigir instala\\u00e7\\u00f5es adicionais do usu\\u00e1rio",
+      "decision": "Usar arquivo JSON para armazenamento persistente local (prompts-data.json)",
+      "consequences": {
+        "positive": [
+          "Zero dependências externas",
+          "Setup instantâneo",
+          "Fácil de fazer backup/migrar",
+          "Simples de debugar",
+          "Adequado para uso pessoal com centenas de prompts"
+        ],
+        "negative": [
+          "Não escala para grandes volumes de dados",
+          "Sem transações ACID",
+          "Leitura/escrita completa do arquivo a cada operação"
+        ]
+      },
+      "alternatives": [
+        "SQLite database - mais estruturado mas adiciona complexidade",
+        "MongoDB - mais poderoso mas exige instalação externa",
+        "In-memory apenas - sem persistência"
+      ],
+      "status": "accepted",
+      "id": "ADR-001",
+      "createdAt": "2026-01-05T02:34:50.274Z"
+    },
+    {
+      "title": "Storage via Pastas Sincronizadas vs API Direta dos Cloud Providers",
+      "context": "Usuários precisam de backup em nuvem dos prompts, mas cada um usa diferentes serviços (OneDrive, Google Drive, Dropbox, iCloud). Precisamos de flexibilidade sem adicionar complexidade excessiva.",
+      "decision": "Implementar sistema de storage configurável usando Strategy Pattern com providers para pastas locais sincronizadas (OneDrive, Google Drive, Dropbox, iCloud Drive) ao invés de integração direta via API",
+      "consequences": {
+        "positive": [
+          "Zero autenticação adicional necessária",
+          "Usa sincronização nativa já configurada",
+          "Simples e transparente para o usuário",
+          "Funciona offline",
+          "Suporta múltiplos providers facilmente",
+          "Sem dependências de APIs externas"
+        ],
+        "negative": [
+          "Não funciona se usuário não tiver cliente desktop instalado",
+          "Sem controle direto sobre sincronização",
+          "Depende de clientes de terceiros"
+        ]
+      },
+      "alternatives": [
+        "Hard-coded para OneDrive apenas",
+        "API direta de cloud providers (requer autenticação OAuth)",
+        "Usar biblioteca de terceiros (rclone, etc)"
+      ],
+      "status": "accepted",
+      "id": "ADR-002",
+      "createdAt": "2026-01-05T03:10:50.056Z"
+    }
+  ],
+  "lastUpdated": "2026-01-05T03:10:50.056Z",
+  "version": "1.0.0"
+}

@@ -1,0 +1,71 @@
+{
+  "contracts": {
+    "prompt": {
+      "name": "Prompt",
+      "context": "backend",
+      "description": "Estrutura de dados que representa um prompt de AI salvo no sistema, contendo todas as informa\\u00e7\\u00f5es necess\\u00e1rias para identifica\\u00e7\\u00e3o, busca e utiliza\\u00e7\\u00e3o",
+      "interfaceCode": "export interface Prompt {\n  id: string;\n  name: string;\n  description: string;\n  content: string;\n  category: string;\n  tags: string[];\n  createdAt: string;\n  updatedAt: string;\n}",
+      "rules": [
+        "ID deve ser único e gerado automaticamente",
+        "name não pode ser duplicado no sistema",
+        "content deve conter o texto completo do prompt",
+        "category é obrigatório para organização",
+        "tags é um array, pode ser vazio mas nunca undefined",
+        "timestamps devem ser ISO 8601 strings"
+      ],
+      "examples": [
+        "const prompt: Prompt = { id: 'prompt_123', name: 'Code Review Expert', description: 'Revisa código', content: '...', category: 'development', tags: ['code-review'], createdAt: '2026-01-04T...', updatedAt: '2026-01-04T...' }"
+      ],
+      "filePath": "src/types.ts",
+      "id": "prompt",
+      "createdAt": "2026-01-05T02:34:15.122Z",
+      "updatedAt": "2026-01-05T02:34:15.122Z"
+    },
+    "storageprovider": {
+      "name": "StorageProvider",
+      "context": "backend",
+      "description": "Interface que todos os storage providers devem implementar. Define operações básicas de leitura, escrita e validação de arquivos de prompts, abstraindo a localização física do armazenamento.",
+      "interfaceCode": "export interface StorageProvider {\n  name: string;\n  type: 'local' | 'onedrive' | 'googledrive' | 'dropbox' | 'icloud';\n  \n  // Verifica se o provider está disponível no sistema\n  isAvailable(): Promise<boolean>;\n  \n  // Obtém caminho sugerido padrão\n  getDefaultPath(): string;\n  \n  // Valida se o caminho configurado é válido e gravável\n  validatePath(path: string): Promise<boolean>;\n  \n  // Carrega prompts do storage\n  load(path: string): Promise<Prompt[]>;\n  \n  // Salva prompts no storage\n  save(path: string, prompts: Prompt[]): Promise<void>;\n  \n  // Verifica se arquivo existe\n  exists(path: string): Promise<boolean>;\n}",
+      "rules": [
+        "Todos os métodos devem ser assíncronos",
+        "isAvailable() deve verificar sem throw exceptions",
+        "validatePath() deve verificar permissões de escrita",
+        "load() deve retornar array vazio se arquivo não existir",
+        "save() deve criar diretórios necessários automaticamente",
+        "Implementações devem ser stateless"
+      ],
+      "examples": [
+        "class OneDriveProvider implements StorageProvider { ... }",
+        "class LocalProvider implements StorageProvider { ... }"
+      ],
+      "filePath": "src/storage/providers/StorageProvider.ts",
+      "id": "storageprovider",
+      "createdAt": "2026-01-05T03:10:52.071Z",
+      "updatedAt": "2026-01-05T03:10:52.071Z"
+    },
+    "storageconfig": {
+      "name": "StorageConfig",
+      "context": "backend",
+      "description": "Configuração de storage persistida que define qual provider está ativo, caminho configurado e opções adicionais. Salvo em arquivo separado da configuração do MCP.",
+      "interfaceCode": "export interface StorageConfig {\n  provider: 'local' | 'onedrive' | 'googledrive' | 'dropbox' | 'icloud';\n  path: string;\n  autoSync: boolean;\n  fallbackToLocal: boolean;\n  lastSyncAt?: string;\n  metadata?: {\n    deviceName?: string;\n    cloudAccountId?: string;\n  };\n}",
+      "rules": [
+        "provider deve corresponder a um StorageProvider implementado",
+        "path deve ser caminho absoluto",
+        "autoSync ativa sincronização automática em falhas",
+        "fallbackToLocal permite continuar operando se cloud falhar",
+        "lastSyncAt rastreia última sincronização bem-sucedida",
+        "Configuração deve ser validada antes de salvar"
+      ],
+      "examples": [
+        "{ provider: 'onedrive', path: '~/OneDrive/AIPrompts', autoSync: true }",
+        "{ provider: 'local', path: './prompts-data.json', autoSync: false }"
+      ],
+      "filePath": "src/storage/config.ts",
+      "id": "storageconfig",
+      "createdAt": "2026-01-05T03:10:56.626Z",
+      "updatedAt": "2026-01-05T03:10:56.626Z"
+    }
+  },
+  "lastUpdated": "2026-01-05T03:10:56.626Z",
+  "version": "1.0.0"
+}
