@@ -227,17 +227,17 @@
         "node:path"
       ],
       "apiEndpoints": [],
-      "status": "planning",
+      "status": "completed",
       "tags": [
         "cloud-storage",
         "google-drive",
         "sync",
         "backup"
       ],
-      "notes": "Caminhos comuns: macOS: ~/Google Drive, Windows: %USERPROFILE%/Google Drive",
+      "notes": "Google Drive provider implementado com suporte para File Stream, Backup & Sync, auto-detecção em Windows/macOS/Linux, e registrado no StorageFactory. Código compilado com sucesso.",
       "filePaths": [],
       "createdAt": "2026-01-05T03:10:26.414Z",
-      "updatedAt": "2026-01-05T03:10:26.414Z"
+      "updatedAt": "2026-01-05T10:25:43.606Z"
     },
     {
       "id": "feat-1767582626414-3orkkasc2",
@@ -269,17 +269,17 @@
         "node:fs/promises"
       ],
       "apiEndpoints": [],
-      "status": "planning",
+      "status": "completed",
       "tags": [
         "cloud-storage",
         "dropbox",
         "sync",
         "backup"
       ],
-      "notes": "Caminho padrão: macOS/Linux: ~/Dropbox, Windows: %USERPROFILE%/Dropbox",
+      "notes": "Dropbox provider implementado com leitura do arquivo de configuração info.json, suporte para Dropbox Personal e Business, auto-detecção em Windows/macOS/Linux, e registrado no StorageFactory. Código compilado com sucesso.",
       "filePaths": [],
       "createdAt": "2026-01-05T03:10:26.414Z",
-      "updatedAt": "2026-01-05T03:10:26.414Z"
+      "updatedAt": "2026-01-05T10:25:44.753Z"
     },
     {
       "id": "feat-1767582626415-pspldzoep",

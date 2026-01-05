@@ -5,6 +5,8 @@ import { StorageProvider, StorageProviderType } from './providers/StorageProvide
 import { StorageConfig, DEFAULT_STORAGE_CONFIG, STORAGE_CONFIG_FILE } from './config.js';
 import { LocalStorageProvider } from './providers/LocalProvider.js';
 import { OneDriveStorageProvider } from './providers/OneDriveProvider.js';
+import { GoogleDriveStorageProvider } from './providers/GoogleDriveProvider.js';
+import { DropboxStorageProvider } from './providers/DropboxProvider.js';
 
 /**
  * Factory para gerenciar storage providers
@@ -23,6 +25,8 @@ export class StorageFactory {
     // Registra providers disponíveis
     this.registerProvider(new LocalStorageProvider());
     this.registerProvider(new OneDriveStorageProvider());
+    this.registerProvider(new GoogleDriveStorageProvider());
+    this.registerProvider(new DropboxStorageProvider());
     
     this.currentProvider = this.providers.get('local')!;
   }
