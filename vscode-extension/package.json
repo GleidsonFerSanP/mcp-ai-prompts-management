@@ -1,0 +1,220 @@
+{
+  "name": "mcp-ai-prompts",
+  "displayName": "MCP AI Prompts",
+  "description": "Manage and organize your AI prompts with cloud storage support (OneDrive, Google Drive, Dropbox)",
+  "version": "1.0.0",
+  "publisher": "gleidsonfersanp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GleidsonFerSanP/mcp-ai-prompts-management.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "ai",
+    "prompts",
+    "mcp",
+    "claude",
+    "chatgpt",
+    "copilot",
+    "snippets"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aiPrompts",
+          "title": "AI Prompts",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "aiPrompts": [
+        {
+          "id": "aiPromptsExplorer",
+          "name": "Prompts Library"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aiPrompts.addPrompt",
+        "title": "Add New Prompt",
+        "category": "AI Prompts",
+        "icon": "$(add)"
+      },
+      {
+        "command": "aiPrompts.editPrompt",
+        "title": "Edit Prompt",
+        "category": "AI Prompts",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "aiPrompts.deletePrompt",
+        "title": "Delete Prompt",
+        "category": "AI Prompts",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "aiPrompts.copyPrompt",
+        "title": "Copy to Clipboard",
+        "category": "AI Prompts",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "aiPrompts.insertPrompt",
+        "title": "Insert at Cursor",
+        "category": "AI Prompts",
+        "icon": "$(insert)"
+      },
+      {
+        "command": "aiPrompts.refreshPrompts",
+        "title": "Refresh Prompts",
+        "category": "AI Prompts",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aiPrompts.configureStorage",
+        "title": "Configure Storage",
+        "category": "AI Prompts",
+        "icon": "$(cloud)"
+      },
+      {
+        "command": "aiPrompts.searchPrompts",
+        "title": "Search Prompts",
+        "category": "AI Prompts",
+        "icon": "$(search)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "aiPrompts.addPrompt",
+          "when": "view == aiPromptsExplorer",
+          "group": "navigation@1"
+        },
+        {
+          "command": "aiPrompts.refreshPrompts",
+          "when": "view == aiPromptsExplorer",
+          "group": "navigation@2"
+        },
+        {
+          "command": "aiPrompts.configureStorage",
+          "when": "view == aiPromptsExplorer",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "aiPrompts.copyPrompt",
+          "when": "view == aiPromptsExplorer && viewItem == prompt",
+          "group": "inline@1"
+        },
+        {
+          "command": "aiPrompts.insertPrompt",
+          "when": "view == aiPromptsExplorer && viewItem == prompt",
+          "group": "inline@2"
+        },
+        {
+          "command": "aiPrompts.editPrompt",
+          "when": "view == aiPromptsExplorer && viewItem == prompt",
+          "group": "1_actions@1"
+        },
+        {
+          "command": "aiPrompts.deletePrompt",
+          "when": "view == aiPromptsExplorer && viewItem == prompt",
+          "group": "2_danger@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "aiPrompts.editPrompt",
+          "when": "false"
+        },
+        {
+          "command": "aiPrompts.deletePrompt",
+          "when": "false"
+        },
+        {
+          "command": "aiPrompts.copyPrompt",
+          "when": "false"
+        },
+        {
+          "command": "aiPrompts.insertPrompt",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Prompts",
+      "properties": {
+        "aiPrompts.storage.provider": {
+          "type": "string",
+          "enum": [
+            "local",
+            "onedrive",
+            "googledrive",
+            "dropbox"
+          ],
+          "default": "local",
+          "description": "Storage provider for AI prompts",
+          "enumDescriptions": [
+            "Local file storage (default)",
+            "OneDrive cloud storage",
+            "Google Drive cloud storage",
+            "Dropbox cloud storage"
+          ]
+        },
+        "aiPrompts.storage.path": {
+          "type": "string",
+          "default": "",
+          "description": "Custom storage path (leave empty for auto-detection)"
+        },
+        "aiPrompts.defaultCategory": {
+          "type": "string",
+          "default": "development",
+          "description": "Default category for new prompts"
+        },
+        "aiPrompts.snippetPrefix": {
+          "type": "string",
+          "default": "prompt-",
+          "description": "Prefix for prompt snippets autocomplete"
+        },
+        "aiPrompts.showCategoryIcons": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show category icons in tree view"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "typescript": "^5.3.3",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}
