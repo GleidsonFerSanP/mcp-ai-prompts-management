@@ -3,9 +3,11 @@ import { PromptsTreeProvider } from './views/PromptsTreeProvider.js';
 import { MCPClient } from './mcpClient.js';
 import { ConfigManager } from './config/ConfigManager.js';
 import { registerCommands } from './commands/index.js';
+import { PromptCompletionProvider } from './completion/PromptCompletionProvider.js';
 
 let mcpClient: MCPClient;
 let treeProvider: PromptsTreeProvider;
+let statusBarItem: vscode.StatusBarItem;
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log('MCP AI Prompts extension is now active!');
@@ -32,7 +34,19 @@ export async function activate(context: vscode.ExtensionContext) {
     // Register all commands
     registerCommands(context, mcpClient, treeProvider, configManager);
 
+    // Register completion provider for all file types
+    const completionProvider = new PromptCompletionProvider(mcpClient);
+    context.subscriptions.push(
+      vscode.languages.registerCompletionItemProvider(
+        { scheme: 'file', pattern: '**/*' },
+        completionProvider,
+        '-' // Trigger on '-' character (for "prompt-")
+      )
+    );
+
     // Show status bar with storage info
+    statusBarItem = createStorageStatusBar(configManager);
+    context.subscriptions.push(statusBarItem);
     updateStorageStatusBar(configManager);
 
     // Listen for configuration changes
@@ -56,10 +70,24 @@ export function deactivate() {
   if (mcpClient) {
     mcpClient.disconnect();
   }
+  if (statusBarItem) {
+    statusBarItem.dispose();
+  }
   console.log('MCP AI Prompts extension deactivated');
 }
 
+function createStorageStatusBar(configManager: ConfigManager): vscode.StatusBarItem {
+  const item = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right,
+    100
+  );
+  item.command = 'aiPrompts.configureStorage';
+  return item;
+}
+
 function updateStorageStatusBar(configManager: ConfigManager) {
+  if (!statusBarItem) return;
+
   const provider = configManager.getStorageProvider();
   const providerNames: Record<string, string> = {
     local: '💾 Local',
@@ -68,12 +96,7 @@ function updateStorageStatusBar(configManager: ConfigManager) {
     dropbox: '☁️ Dropbox'
   };
 
-  const statusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
-  statusBarItem.text = providerNames[provider] || '💾 Local';
-  statusBarItem.tooltip = `Storage: ${provider}`;
-  statusBarItem.command = 'aiPrompts.configureStorage';
+  statusBarItem.text = `$(database) ${providerNames[provider] || 'Local'}`;
+  statusBarItem.tooltip = `AI Prompts Storage: ${provider}\nClick to change`;
   statusBarItem.show();
 }

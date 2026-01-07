@@ -94,6 +94,12 @@
         "title": "Search Prompts",
         "category": "AI Prompts",
         "icon": "$(search)"
+      },
+      {
+        "command": "aiPrompts.showStats",
+        "title": "Show Statistics",
+        "category": "AI Prompts",
+        "icon": "$(graph)"
       }
     ],
     "menus": {

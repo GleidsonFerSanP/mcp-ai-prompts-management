@@ -192,6 +192,45 @@ export class PromptWebView {
       font-weight: 600;
     }
 
+    .metadata {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 15px;
+      background-color: var(--vscode-editor-inactiveSelectionBackground);
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .metadata-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .metadata-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--vscode-descriptionForeground);
+      font-weight: 600;
+    }
+
+    .metadata-value {
+      font-size: 13px;
+      color: var(--vscode-foreground);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      background-color: var(--vscode-badge-background);
+      color: var(--vscode-badge-foreground);
+      margin-right: 5px;
+    }
+
     .actions {
       display: flex;
       gap: 10px;
@@ -364,6 +403,37 @@ export class PromptWebView {
         <button class="btn-primary" onclick="savePrompt()">💾 Save</button>
       </div>
     </div>
+
+    ${!isNewPrompt ? `
+    <div class="metadata">
+      <div class="metadata-item">
+        <span class="metadata-label">ID</span>
+        <span class="metadata-value">${this.escapeHtml(prompt.id)}</span>
+      </div>
+      <div class="metadata-item">
+        <span class="metadata-label">Created</span>
+        <span class="metadata-value">${new Date(prompt.createdAt).toLocaleDateString()}</span>
+      </div>
+      ${prompt.updatedAt ? `
+      <div class="metadata-item">
+        <span class="metadata-label">Last Updated</span>
+        <span class="metadata-value">${new Date(prompt.updatedAt).toLocaleDateString()}</span>
+      </div>
+      ` : ''}
+      <div class="metadata-item">
+        <span class="metadata-label">Category</span>
+        <span class="metadata-value"><span class="badge">${this.escapeHtml(prompt.category)}</span></span>
+      </div>
+      <div class="metadata-item">
+        <span class="metadata-label">Tags</span>
+        <span class="metadata-value">
+          ${prompt.tags.length > 0 
+            ? prompt.tags.map(tag => `<span class="badge">${this.escapeHtml(tag)}</span>`).join('') 
+            : '<span style="color: var(--vscode-descriptionForeground);">No tags</span>'}
+        </span>
+      </div>
+    </div>
+    ` : ''}
 
     <form id="promptForm">
       <div class="form-group">

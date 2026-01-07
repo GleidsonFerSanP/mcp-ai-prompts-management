@@ -172,4 +172,25 @@ export function registerCommands(
       }
     })
   );
+
+  // Show Prompt Stats
+  context.subscriptions.push(
+    vscode.commands.registerCommand('aiPrompts.showStats', async () => {
+      try {
+        const prompts = await mcpClient.listPrompts();
+        const categories = await mcpClient.getCategories();
+        const tags = await mcpClient.getTags();
+
+        const statsMessage = `📊 **AI Prompts Statistics**\n\n` +
+          `• Total Prompts: ${prompts.length}\n` +
+          `• Categories: ${categories.length}\n` +
+          `• Tags: ${tags.length}\n` +
+          `• Storage: ${configManager.getStorageProvider()}`;
+
+        vscode.window.showInformationMessage(statsMessage, { modal: false });
+      } catch (error) {
+        vscode.window.showErrorMessage(`Failed to load stats: ${error}`);
+      }
+    })
+  );
 }
