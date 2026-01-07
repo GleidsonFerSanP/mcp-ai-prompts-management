@@ -4,16 +4,25 @@
   "description": "Manage and organize your AI prompts with cloud storage support (OneDrive, Google Drive, Dropbox)",
   "version": "1.0.0",
   "publisher": "gleidsonfersanp",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/GleidsonFerSanP/mcp-ai-prompts-management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GleidsonFerSanP/mcp-ai-prompts-management/issues"
+  },
+  "homepage": "https://github.com/GleidsonFerSanP/mcp-ai-prompts-management#readme",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
   },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other",
-    "Snippets"
+    "Snippets",
+    "Other"
   ],
   "keywords": [
     "ai",
@@ -22,7 +31,9 @@
     "claude",
     "chatgpt",
     "copilot",
-    "snippets"
+    "snippets",
+    "cloud-storage",
+    "productivity"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -94,6 +105,12 @@
         "title": "Search Prompts",
         "category": "AI Prompts",
         "icon": "$(search)"
+      },
+      {
+        "command": "aiPrompts.showStats",
+        "title": "Show Statistics",
+        "category": "AI Prompts",
+        "icon": "$(graph)"
       }
     ],
     "menus": {

@@ -1,40 +1,75 @@
 # MCP AI Prompts - VS Code Extension
 
-Manage and organize your AI prompts directly in VS Code with cloud storage support!
+<div align="center">
 
-## Features
+**Manage and organize your AI prompts directly in VS Code**
 
-### 📚 Prompts Library
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/GleidsonFerSanP/mcp-ai-prompts-management)
 
-* **Tree View** with organized categories
-* **Search** and filter prompts
-* **Quick actions**: Copy, Insert, Edit, Delete
-* **Category organization** with custom icons
+</div>
+
+## 📖 Overview
+
+MCP AI Prompts is a powerful VS Code extension that helps you manage, organize, and quickly access your favorite AI prompts. Built on top of the Model Context Protocol (MCP), it provides a seamless experience for developers who work with AI assistants.
+
+## ✨ Features
+
+### 🎯 Prompt Management
+
+* **TreeView Sidebar** - Browse prompts organized by category
+* **Quick Search** - Find prompts instantly with Command Palette
+* **Rich Editor** - Create and edit prompts with a beautiful WebView interface
+* **Metadata Panel** - View creation date, last update, category, and tags
+
+### 🚀 Quick Access
+
+* **IntelliSense Completions** - Type `prompt-` in any file to see autocomplete suggestions
+* **Copy & Insert** - One-click copy to clipboard or insert at cursor
+* **Command Palette** - Access all features via `Cmd+Shift+P`
 
 ### ☁️ Cloud Storage Support
 
 Store your prompts in:
-* **Local** - Default local storage
-* **OneDrive** - Microsoft OneDrive
-* **Google Drive** - Google Drive (File Stream & Backup)
-* **Dropbox** - Dropbox Personal & Business
+* 💾 **Local** - Default local storage
+* ☁️ **OneDrive** - Microsoft OneDrive
+* ☁️ **Google Drive** - Google Drive (File Stream & Backup)
+* ☁️ **Dropbox** - Dropbox Personal & Business
 
-### ⚡ Quick Actions
+### 🎨 Beautiful UI
 
-* `Ctrl+Shift+P` → **AI Prompts: Add New Prompt**
-* `Ctrl+Shift+P` → **AI Prompts: Search Prompts**
-* `Ctrl+Shift+P` → **AI Prompts: Configure Storage**
+* **Category Icons** - Visual icons for different prompt categories
+* **Color Coding** - Tags and categories with distinct colors
+* **Dark/Light Theme** - Adapts to your VS Code theme
+* **Status Bar** - Shows current storage provider at a glance
 
-### 🔍 Snippets
+## 🚀 Quick Start
 
-Type `prompt-` in any file to autocomplete and insert your prompts!
+### 1. Add Your First Prompt
 
-## Installation
+```
+Cmd+Shift+P → "AI Prompts: Add New Prompt"
+```
 
-1. Install from VS Code Marketplace
-2. Open **AI Prompts** sidebar
-3. Click the cloud icon to configure storage
-4. Start adding prompts!
+Fill in the form with title, category, description, tags, and content.
+
+### 2. Use the Prompt
+
+**Option A: IntelliSense**
+
+```typescript
+// Type "prompt-" and see autocomplete
+prompt-code-reviewer
+```
+
+**Option B: Sidebar** - Click and choose "Copy" or "Insert at Cursor"
+
+**Option C: Quick Search** - `Cmd+Shift+P → "AI Prompts: Search Prompts"`
+
+### 3. Configure Cloud Storage
+
+```
+Cmd+Shift+P → "AI Prompts: Configure Storage"
+```
 
 ## Configuration
 

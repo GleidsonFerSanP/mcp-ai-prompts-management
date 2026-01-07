@@ -15,11 +15,47 @@ export class PromptTreeItem extends vscode.TreeItem {
       this.contextValue = 'prompt';
       this.tooltip = `${prompt.name}\n\n${prompt.description}\n\nTags: ${prompt.tags.join(', ')}`;
       this.description = prompt.description;
-      this.iconPath = new vscode.ThemeIcon('file-code');
+      this.iconPath = this.getPromptIcon(prompt);
     } else if (isCategory) {
       this.contextValue = 'category';
-      this.iconPath = new vscode.ThemeIcon('folder');
+      this.iconPath = this.getCategoryIcon(label);
     }
+  }
+
+  private getPromptIcon(prompt: Prompt): vscode.ThemeIcon {
+    // Icon based on tags or category
+    if (prompt.tags.includes('expert') || prompt.tags.includes('advanced')) {
+      return new vscode.ThemeIcon('star-full', new vscode.ThemeColor('charts.yellow'));
+    }
+    if (prompt.tags.includes('code') || prompt.category.toLowerCase() === 'code') {
+      return new vscode.ThemeIcon('file-code', new vscode.ThemeColor('charts.blue'));
+    }
+    if (prompt.tags.includes('documentation') || prompt.category.toLowerCase() === 'documentation') {
+      return new vscode.ThemeIcon('book', new vscode.ThemeColor('charts.green'));
+    }
+    if (prompt.tags.includes('testing') || prompt.category.toLowerCase() === 'testing') {
+      return new vscode.ThemeIcon('beaker', new vscode.ThemeColor('charts.purple'));
+    }
+    return new vscode.ThemeIcon('file-text');
+  }
+
+  private getCategoryIcon(category: string): vscode.ThemeIcon {
+    const lowerCategory = category.toLowerCase();
+    
+    const iconMap: Record<string, string> = {
+      'code': 'code',
+      'writing': 'edit',
+      'analysis': 'graph',
+      'debugging': 'bug',
+      'documentation': 'book',
+      'testing': 'beaker',
+      'general': 'file',
+      'development': 'tools',
+      'security': 'shield'
+    };
+
+    const iconName = iconMap[lowerCategory] || 'folder';
+    return new vscode.ThemeIcon(iconName);
   }
 }
 

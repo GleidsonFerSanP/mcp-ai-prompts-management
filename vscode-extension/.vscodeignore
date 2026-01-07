@@ -9,3 +9,10 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 node_modules/**
+.git
+.github
+.DS_Store
+*.vsix
+prepare-screenshots.sh
+SCREENSHOTS_GUIDE.md
+PUBLISHING.md
