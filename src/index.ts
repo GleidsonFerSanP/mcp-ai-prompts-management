@@ -17,6 +17,12 @@ import {
   UpdatePromptParams,
   ListPromptsParams,
 } from './types.js';
+import {
+  formatPromptListCompact,
+  estimateTokens,
+  needsCompaction,
+  extractSummary,
+} from './compaction.js';
 
 /**
  * Cria uma instância do servidor MCP
@@ -75,7 +81,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: 'list_prompts',
         description:
-          'Lista todos os prompts salvos, com opção de filtrar por categoria, tags ou busca por palavra-chave.',
+          'Lista prompts salvos (retorna apenas metadata para eficiência de contexto). Suporta filtros por categoria, tags ou busca. Use get_prompt para conteúdo completo.',
         inputSchema: {
           type: 'object',
           properties: {
@@ -93,13 +99,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description:
                 'Buscar por palavra-chave no nome ou descrição (opcional)',
             },
+            compact: {
+              type: 'boolean',
+              description: 'Se true (padrão), retorna apenas metadata. Se false, inclui descrição completa.',
+            },
           },
         },
       },
       {
         name: 'get_prompt',
         description:
-          'Obtém o conteúdo completo de um prompt específico pelo ID ou nome.',
+          'Obtém o conteúdo COMPLETO de um prompt pelo ID ou nome. Use apenas quando precisar do conteúdo inteiro.',
         inputSchema: {
           type: 'object',
           properties: {
@@ -112,6 +122,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description: 'Nome do prompt (use id OU name)',
             },
           },
+        },
+      },
+      {
+        name: 'get_prompt_summary',
+        description:
+          'Obtém apenas resumo/descrição de um prompt (eficiente para contexto). Use get_prompt para conteúdo completo.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              description: 'ID do prompt',
+            },
+          },
+          required: ['id'],
         },
       },
       {
@@ -175,6 +200,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: 'get_tags',
         description: 'Lista todas as tags únicas usadas nos prompts.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'get_context_stats',
+        description:
+          'Retorna estatísticas de uso de contexto (tokens estimados por categoria). Útil para planejamento de context budget.',
         inputSchema: {
           type: 'object',
           properties: {},
@@ -271,8 +305,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'list_prompts': {
-        const params = args as unknown as ListPromptsParams;
+        const params = args as unknown as ListPromptsParams & { compact?: boolean };
         let prompts = await loadPrompts();
+        const useCompact = params.compact !== false; // Default to compact mode
 
         // Aplicar filtros
         if (params.category) {
@@ -309,6 +344,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           };
         }
 
+        // Progressive Context Enrichment: return compact by default
+        if (useCompact) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: formatPromptListCompact(prompts),
+              },
+            ],
+          };
+        }
+
+        // Full mode (backward compatibility)
         const promptList = prompts
           .map(
             (p) =>
@@ -356,6 +404,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           );
         }
 
+        // Add token estimation for context awareness
+        const tokenEstimate = estimateTokens(prompt.content);
+        const contentWarning = tokenEstimate > 1000 
+          ? `\n\n⚠️ **Conteúdo extenso** (~${tokenEstimate} tokens). Considere usar get_prompt_summary para resumo.`
+          : '';
+
         return {
           content: [
             {
@@ -369,7 +423,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 `---\n` +
                 `ID: ${prompt.id}\n` +
                 `Criado: ${new Date(prompt.createdAt).toLocaleDateString('pt-BR')}\n` +
-                `Atualizado: ${new Date(prompt.updatedAt).toLocaleDateString('pt-BR')}`,
+                `Atualizado: ${new Date(prompt.updatedAt).toLocaleDateString('pt-BR')}` +
+                contentWarning,
+            },
+          ],
+        };
+      }
+
+      case 'get_prompt_summary': {
+        const params = args as unknown as { id: string };
+        const prompts = await loadPrompts();
+        const prompt = prompts.find((p) => p.id === params.id);
+
+        if (!prompt) {
+          throw new McpError(
+            ErrorCode.InvalidRequest,
+            'Prompt não encontrado'
+          );
+        }
+
+        // Progressive disclosure: return summary only
+        const contentPreview = extractSummary(prompt.content, 200);
+        const tokenEstimate = estimateTokens(prompt.content);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text:
+                `📋 **${prompt.name}** (Resumo)\n\n` +
+                `**Descrição:** ${prompt.description}\n\n` +
+                `**Categoria:** ${prompt.category}\n` +
+                `**Tags:** ${prompt.tags.join(', ') || 'nenhuma'}\n\n` +
+                `**Preview:** ${contentPreview}\n\n` +
+                `---\n` +
+                `Tokens estimados: ~${tokenEstimate}\n` +
+                `💡 Use \`get_prompt\` com id "${prompt.id}" para conteúdo completo.`,
             },
           ],
         };
@@ -484,6 +573,53 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             {
               type: 'text',
               text: `🔖 **Tags disponíveis:**\n\n${uniqueTags.map((t) => `• ${t}`).join('\n')}`,
+            },
+          ],
+        };
+      }
+
+      case 'get_context_stats': {
+        const prompts = await loadPrompts();
+        
+        // Calculate stats per category
+        const categoryStats: Record<string, { count: number; tokens: number }> = {};
+        let totalTokens = 0;
+
+        for (const prompt of prompts) {
+          const tokens = estimateTokens(prompt.content);
+          totalTokens += tokens;
+
+          if (!categoryStats[prompt.category]) {
+            categoryStats[prompt.category] = { count: 0, tokens: 0 };
+          }
+          categoryStats[prompt.category].count++;
+          categoryStats[prompt.category].tokens += tokens;
+        }
+
+        // Format output
+        const categoryList = Object.entries(categoryStats)
+          .sort((a, b) => b[1].tokens - a[1].tokens)
+          .map(([cat, stats]) => 
+            `• **${cat}**: ${stats.count} prompt(s), ~${stats.tokens} tokens`
+          )
+          .join('\n');
+
+        // Identify large prompts that might need compaction
+        const largePrompts = prompts
+          .filter(p => needsCompaction(p.content))
+          .map(p => `• ${p.name}: ~${estimateTokens(p.content)} tokens`)
+          .join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text:
+                `📊 **Context Stats**\n\n` +
+                `**Total:** ${prompts.length} prompts, ~${totalTokens} tokens\n\n` +
+                `**Por Categoria:**\n${categoryList}\n\n` +
+                (largePrompts ? `**⚠️ Prompts Grandes (>1000 tokens):**\n${largePrompts}\n\n` : '') +
+                `💡 Use filtros em \`list_prompts\` para reduzir uso de contexto.`,
             },
           ],
         };

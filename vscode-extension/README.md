@@ -4,7 +4,8 @@
 
 **Manage and organize your AI prompts directly in VS Code**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/GleidsonFerSanP/mcp-ai-prompts-management)
+[![Version](https://img.shields.io/vscode-marketplace/v/GleidsonFerSanP.mcp-ai-prompts.svg)](https://marketplace.visualstudio.com/items?itemName=GleidsonFerSanP.mcp-ai-prompts)
+[![Installs](https://img.shields.io/vscode-marketplace/i/GleidsonFerSanP.mcp-ai-prompts.svg)](https://marketplace.visualstudio.com/items?itemName=GleidsonFerSanP.mcp-ai-prompts)
 
 </div>
 
@@ -15,12 +16,14 @@ MCP AI Prompts is a powerful VS Code extension that helps you manage, organize, 
 ## ✨ Features
 
 ### 🎯 Prompt Management
+
 * **TreeView Sidebar** - Browse prompts organized by category
 * **Quick Search** - Find prompts instantly with Command Palette
 * **Rich Editor** - Create and edit prompts with a beautiful WebView interface
 * **Metadata Panel** - View creation date, last update, category, and tags
 
 ### 🚀 Quick Access
+
 * **IntelliSense Completions** - Type `prompt-` in any file to see autocomplete suggestions
 * **Copy & Insert** - One-click copy to clipboard or insert at cursor
 * **Command Palette** - Access all features via `Cmd+Shift+P`
@@ -34,6 +37,7 @@ Store your prompts in:
 * ☁️ **Dropbox** - Dropbox Personal & Business
 
 ### 🎨 Beautiful UI
+
 * **Category Icons** - Visual icons for different prompt categories
 * **Color Coding** - Tags and categories with distinct colors
 * **Dark/Light Theme** - Adapts to your VS Code theme
@@ -42,14 +46,17 @@ Store your prompts in:
 ## 🚀 Quick Start
 
 ### 1. Add Your First Prompt
+
 ```
 Cmd+Shift+P → "AI Prompts: Add New Prompt"
 ```
+
 Fill in the form with title, category, description, tags, and content.
 
 ### 2. Use the Prompt
 
 **Option A: IntelliSense**
+
 ```typescript
 // Type "prompt-" and see autocomplete
 prompt-code-reviewer
@@ -60,6 +67,7 @@ prompt-code-reviewer
 **Option C: Quick Search** - `Cmd+Shift+P → "AI Prompts: Search Prompts"`
 
 ### 3. Configure Cloud Storage
+
 ```
 Cmd+Shift+P → "AI Prompts: Configure Storage"
 ```
