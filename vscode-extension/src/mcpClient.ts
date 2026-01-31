@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
 
 export interface Prompt {
   id: string;
@@ -20,15 +22,73 @@ export class MCPClient {
 
   constructor(private context: vscode.ExtensionContext) {}
 
+  /**
+   * Finds the MCP server path using multiple strategies:
+   * 1. Configuration setting (user defined)
+   * 2. Bundled server (within extension)
+   * 3. Global npm installation
+   * 4. Local development path
+   */
+  private findServerPath(): string {
+    // Strategy 1: User configured path
+    const configPath = vscode.workspace.getConfiguration('aiPrompts').get<string>('mcpServerPath');
+    if (configPath && fs.existsSync(configPath)) {
+      console.log('Using configured MCP server path:', configPath);
+      return configPath;
+    }
+
+    // Strategy 2: Bundled server (server files inside extension)
+    const bundledPath = path.join(this.context.extensionPath, 'server', 'index.js');
+    if (fs.existsSync(bundledPath)) {
+      console.log('Using bundled MCP server:', bundledPath);
+      return bundledPath;
+    }
+
+    // Strategy 3: Check npx global package
+    const globalNpmPaths = [
+      // macOS/Linux global npm
+      path.join(os.homedir(), '.npm-global', 'lib', 'node_modules', 'mcp-ai-prompts', 'build', 'index.js'),
+      path.join('/usr', 'local', 'lib', 'node_modules', 'mcp-ai-prompts', 'build', 'index.js'),
+      // Windows global npm
+      path.join(process.env.APPDATA || '', 'npm', 'node_modules', 'mcp-ai-prompts', 'build', 'index.js'),
+    ];
+    
+    for (const globalPath of globalNpmPaths) {
+      if (fs.existsSync(globalPath)) {
+        console.log('Using global npm MCP server:', globalPath);
+        return globalPath;
+      }
+    }
+
+    // Strategy 4: Development - sibling folder or parent folder
+    const devPaths = [
+      // Sibling to extension folder (monorepo structure) - check both dist and build
+      path.join(this.context.extensionPath, '..', 'dist', 'index.js'),
+      path.join(this.context.extensionPath, '..', 'build', 'index.js'),
+      // Parent folder (for local dev when extension is in vscode-extension/)
+      path.join(this.context.extensionPath, '..', '..', 'dist', 'index.js'),
+      path.join(this.context.extensionPath, '..', '..', 'build', 'index.js'),
+    ];
+
+    for (const devPath of devPaths) {
+      const resolvedPath = path.resolve(devPath);
+      if (fs.existsSync(resolvedPath)) {
+        console.log('Using development MCP server:', resolvedPath);
+        return resolvedPath;
+      }
+    }
+
+    // Fallback: Use npx to run the package (will download if needed)
+    throw new Error(
+      'MCP server not found. Please install it globally with: npm install -g mcp-ai-prompts\n' +
+      'Or configure the path in settings: aiPrompts.mcpServerPath'
+    );
+  }
+
   async connect(): Promise<void> {
     try {
-      // Path to the MCP server
-      const serverPath = path.join(
-        this.context.extensionPath,
-        '..',
-        'build',
-        'index.js'
-      );
+      // Find server path using multiple strategies
+      const serverPath = this.findServerPath();
 
       // Create stdio transport
       this.transport = new StdioClientTransport({
@@ -49,7 +109,7 @@ export class MCPClient {
 
       // Connect to server
       await this.client.connect(this.transport);
-      console.log('Connected to MCP server');
+      console.log('Connected to MCP server at:', serverPath);
     } catch (error) {
       console.error('Failed to connect to MCP server:', error);
       throw error;
@@ -67,6 +127,13 @@ export class MCPClient {
     }
   }
 
+  /**
+   * Check if the MCP client is connected
+   */
+  isConnected(): boolean {
+    return this.client !== null;
+  }
+
   async listPrompts(): Promise<Prompt[]> {
     if (!this.client) {
       throw new Error('MCP client not connected');
@@ -75,7 +142,7 @@ export class MCPClient {
     try {
       const response = await this.client.callTool({
         name: 'list_prompts',
-        arguments: {}
+        arguments: { format: 'json' }
       });
 
       if (response.content && Array.isArray(response.content) && response.content.length > 0) {
@@ -101,7 +168,7 @@ export class MCPClient {
     try {
       const response = await this.client.callTool({
         name: 'get_prompt',
-        arguments: { id }
+        arguments: { id, format: 'json' }
       });
 
       if (response.content && Array.isArray(response.content) && response.content.length > 0) {
@@ -138,7 +205,8 @@ export class MCPClient {
           description,
           category,
           tags,
-          content
+          content,
+          format: 'json'
         }
       });
 
@@ -170,7 +238,8 @@ export class MCPClient {
         name: 'update_prompt',
         arguments: {
           id,
-          ...updates
+          ...updates,
+          format: 'json'
         }
       });
 
@@ -197,7 +266,7 @@ export class MCPClient {
     try {
       await this.client.callTool({
         name: 'delete_prompt',
-        arguments: { id }
+        arguments: { id, format: 'json' }
       });
     } catch (error) {
       console.error('Error deleting prompt:', error);
@@ -213,7 +282,7 @@ export class MCPClient {
     try {
       const response = await this.client.callTool({
         name: 'get_categories',
-        arguments: {}
+        arguments: { format: 'json' }
       });
 
       if (response.content && Array.isArray(response.content) && response.content.length > 0) {
@@ -239,7 +308,7 @@ export class MCPClient {
     try {
       const response = await this.client.callTool({
         name: 'get_tags',
-        arguments: {}
+        arguments: { format: 'json' }
       });
 
       if (response.content && Array.isArray(response.content) && response.content.length > 0) {
@@ -284,7 +353,7 @@ export class MCPClient {
     try {
       const response = await this.client.callTool({
         name: 'list_storage_providers',
-        arguments: {}
+        arguments: { format: 'json' }
       });
 
       if (response.content && Array.isArray(response.content) && response.content.length > 0) {

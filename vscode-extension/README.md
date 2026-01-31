@@ -112,10 +112,53 @@ Configure in Settings ( `Cmd+,` ):
 3. Extension will auto-detect the folder
 4. Done! Your prompts sync automatically
 
+## Installation Methods
+
+### Method 1: Install from VSIX (Recommended)
+
+```bash
+# Download the latest .vsix file from releases
+code --install-extension mcp-ai-prompts-1.0.1.vsix
+```
+
+### Method 2: Install from Marketplace
+
+Search for "MCP AI Prompts" in the VS Code Extensions marketplace.
+
+### Method 3: Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/GleidsonFerSanP/mcp-ai-prompts-management.git
+cd mcp-ai-prompts-management
+
+# Build the main MCP server
+npm install && npm run build
+
+# Build the extension
+cd vscode-extension
+npm install && npm run compile
+
+# Open in VS Code and press F5 to debug
+```
+
 ## Requirements
 
 * VS Code 1.85.0 or higher
-* Node.js (for MCP server)
+* The MCP server is bundled with the extension (no separate installation needed)
+
+## Configuration
+
+### Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `aiPrompts.storage.provider` | `local` | Storage provider (local, onedrive, googledrive, dropbox) |
+| `aiPrompts.storage.path` | `""` | Custom storage path (auto-detect if empty) |
+| `aiPrompts.mcpServerPath` | `""` | Custom MCP server path (auto-detect if empty) |
+| `aiPrompts.defaultCategory` | `development` | Default category for new prompts |
+| `aiPrompts.snippetPrefix` | `prompt-` | Prefix for autocomplete snippets |
+| `aiPrompts.showCategoryIcons` | `true` | Show icons in tree view |
 
 ## Known Issues
 
@@ -123,18 +166,8 @@ None at this time. Please report issues on [GitHub](https://github.com/GleidsonF
 
 ## Release Notes
 
-### 1.0.0
+### 1.0.1
 
-* Initial release
-* Tree view with categories
-* Cloud storage support (OneDrive, Google Drive, Dropbox)
-* Snippet autocomplete
-* Basic CRUD operations
-
-## Contributing
-
-Contributions are welcome! See [CONTRIBUTING.md](../CONTRIBUTING.md).
-
-## License
-
-MIT License - see [LICENSE](../LICENSE) for details.
+* Improved MCP server connection with auto-detection
+* Added server bundling for standalone distribution
+* Fixed type consistency issues

@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { MCPClient } from '../mcpClient.js';
-import { PromptsTreeProvider } from '../views/PromptsTreeProvider.js';
-import { ConfigManager } from '../config/ConfigManager.js';
-import { PromptWebView } from '../views/PromptWebView.js';
+import { MCPClient } from '../mcpClient';
+import { PromptsTreeProvider } from '../views/PromptsTreeProvider';
+import { ConfigManager } from '../config/ConfigManager';
+import { PromptWebView } from '../views/PromptWebView';
 
 export function registerCommands(
   context: vscode.ExtensionContext,
@@ -28,9 +28,18 @@ export function registerCommands(
     vscode.commands.registerCommand('aiPrompts.editPrompt', async (item: any) => {
       if (!item?.prompt) return;
 
-      await webView.show(item.prompt);
+      await webView.show(item.prompt, false); // false = edit mode
       // Refresh tree after potential save
       setTimeout(() => treeProvider.refresh(), 1000);
+    })
+  );
+
+  // View Prompt (Read-only)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('aiPrompts.viewPrompt', async (item: any) => {
+      if (!item?.prompt) return;
+
+      await webView.show(item.prompt, true); // true = view mode
     })
   );
 
@@ -100,22 +109,79 @@ export function registerCommands(
     vscode.commands.registerCommand('aiPrompts.configureStorage', async () => {
       const providers = await mcpClient.listStorageProviders();
 
-      const items = providers.map(p => ({
-        label: `${p.available ? '✅' : '❌'} ${p.name}`,
-        description: p.available ? 'Available' : 'Not available',
-        provider: p.type
-      }));
+      // Separate available and unavailable providers
+      const availableProviders = providers.filter(p => p.available);
+      const unavailableProviders = providers.filter(p => !p.available);
+
+      if (availableProviders.length === 0) {
+        vscode.window.showWarningMessage(
+          'No cloud storage providers available. Using local storage.',
+          'Learn More'
+        ).then(selection => {
+          if (selection === 'Learn More') {
+            vscode.env.openExternal(vscode.Uri.parse('https://github.com/GleidsonFerSanP/mcp-ai-prompts-management#storage-providers'));
+          }
+        });
+        return;
+      }
+
+      // Build items list with available providers first
+      const items: vscode.QuickPickItem[] = [
+        { label: 'Available Providers', kind: vscode.QuickPickItemKind.Separator },
+        ...availableProviders.map(p => ({
+          label: `✅ ${p.name}`,
+          description: p.active ? '(Currently active)' : 'Ready to use',
+          detail: `Store prompts in ${p.name}`,
+          provider: p.type
+        } as vscode.QuickPickItem & { provider: string }))
+      ];
+
+      // Add unavailable providers section if any
+      if (unavailableProviders.length > 0) {
+        items.push(
+          { label: 'Unavailable (Not installed)', kind: vscode.QuickPickItemKind.Separator },
+          ...unavailableProviders.map(p => ({
+            label: `❌ ${p.name}`,
+            description: 'Not detected on this system',
+            detail: `Install ${p.name} desktop app to enable`,
+            provider: p.type
+          } as vscode.QuickPickItem & { provider: string }))
+        );
+      }
 
       const selected = await vscode.window.showQuickPick(items, {
-        placeHolder: 'Select storage provider'
-      });
+        placeHolder: 'Select storage provider',
+        title: 'Configure Storage Provider'
+      }) as (vscode.QuickPickItem & { provider?: string }) | undefined;
 
-      if (!selected) return;
+      if (!selected || !selected.provider) return;
+
+      // Check if selected provider is unavailable
+      const selectedProvider = providers.find(p => p.type === selected.provider);
+      if (selectedProvider && !selectedProvider.available) {
+        const action = await vscode.window.showWarningMessage(
+          `${selectedProvider.name} is not installed on this system. Please install the desktop app first.`,
+          'Use Local Storage',
+          'Cancel'
+        );
+        
+        if (action === 'Use Local Storage') {
+          try {
+            await mcpClient.configureStorage('local');
+            await configManager.setStorageProvider('local');
+            vscode.window.showInformationMessage('Storage set to Local');
+            treeProvider.refresh();
+          } catch (error) {
+            vscode.window.showErrorMessage(`Failed to configure storage: ${error}`);
+          }
+        }
+        return;
+      }
 
       try {
         await mcpClient.configureStorage(selected.provider);
         await configManager.setStorageProvider(selected.provider);
-        vscode.window.showInformationMessage(`Storage set to ${selected.label}`);
+        vscode.window.showInformationMessage(`Storage set to ${selectedProvider?.name || selected.provider}`);
         treeProvider.refresh();
       } catch (error) {
         vscode.window.showErrorMessage(`Failed to configure storage: ${error}`);

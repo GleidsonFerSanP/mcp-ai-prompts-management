@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { MCPClient } from '../mcpClient.js';
+import { MCPClient } from '../mcpClient';
 
 /**
  * Completion provider for AI prompts

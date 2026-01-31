@@ -1,6 +1,8 @@
 .vscode/**
 .vscode-test/**
 src/**
+scripts/**
+server-src/**
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
@@ -8,11 +10,22 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+!dist/**
+!server/index.js
+
+# Exclude all node_modules - esbuild bundles everything
 node_modules/**
-.git
-.github
+
+.git/**
+.github/**
 .DS_Store
 *.vsix
 prepare-screenshots.sh
 SCREENSHOTS_GUIDE.md
 PUBLISHING.md
+esbuild.js
+esbuild-server.js
+
+# Environment files (secrets)
+.env
+*.env

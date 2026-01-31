@@ -1,0 +1,41 @@
+{
+  "session-1769811560094-cp42azfr6": {
+    "sessionId": "session-1769811560094-cp42azfr6",
+    "projectId": "mcp-ai-prompts",
+    "context": "shared",
+    "activeContracts": [],
+    "activeFeatures": [],
+    "currentFocus": "Testar a extens\\u00e3o instalando-a no VSCode e verificar funcionalidade end-to-end",
+    "turnCount": 0,
+    "lastContextRefresh": "2026-01-30T22:19:20.094Z",
+    "focusReminders": [
+      "Verificar completude da extensão VSCode",
+      "Comparar com roadmap documentado",
+      "Testar comunicação MCP client-server",
+      "Garantir funcionalidade end-to-end"
+    ],
+    "checkpoints": [
+      {
+        "id": "cp-1769812242568",
+        "timestamp": "2026-01-30T22:30:42.568Z",
+        "turnCount": 0,
+        "summary": "Conclus\\u00e3o da implementa\\u00e7\\u00e3o da extens\\u00e3o VSCode para MCP AI Prompts Management:\\n\\n1. **An\\u00e1lise Completa**: Verificadas todas as features implementadas vs roadmap\\n2. **Corre\\u00e7\\u00f5es**: \\n   - MCPClient com m\\u00faltiplas estrat\\u00e9gias de detec\\u00e7\\u00e3o do servidor\\n   - Consist\\u00eancia de tipos entre WebView e MCP\\n   - Script de bundle do servidor\\n3. **Empacotamento**: Criado mcp-ai-prompts-1.0.1.vsix (2.43MB)\\n4. **Documenta\\u00e7\\u00e3o**: README e CHANGELOG atualizados",
+        "nextFocus": "Testar a extens\\u00e3o instalando-a no VSCode e verificar funcionalidade end-to-end",
+        "activeGuidelines": [],
+        "filesModified": [
+          "vscode-extension/src/mcpClient.ts",
+          "vscode-extension/src/views/PromptWebView.ts",
+          "vscode-extension/package.json",
+          "vscode-extension/.vscodeignore",
+          "vscode-extension/scripts/bundle-server.sh",
+          "vscode-extension/README.md",
+          "vscode-extension/CHANGELOG.md"
+        ]
+      }
+    ],
+    "violations": [],
+    "status": "active",
+    "createdAt": "2026-01-30T22:19:20.094Z",
+    "updatedAt": "2026-01-30T22:30:42.568Z"
+  }
+}

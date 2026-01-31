@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { MCPClient, Prompt } from '../mcpClient.js';
-import { ConfigManager } from '../config/ConfigManager.js';
+import { MCPClient, Prompt } from '../mcpClient';
+import { ConfigManager } from '../config/ConfigManager';
 
 export class PromptTreeItem extends vscode.TreeItem {
   constructor(
