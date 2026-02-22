@@ -2,13 +2,55 @@
 
 All notable changes to the "mcp-ai-prompts" extension will be documented in this file.
 
+## [1.2.2] - 2026-02-22
+
+### 🐛 Bug Fixes
+
+* Standardized "Expected Output:" label in all prompt templates (zero-shot, few-shot, chain-of-thought, react, tree-of-thought)
+* Output format now consistently labeled across all prompt types for better clarity
+
+---
+
+## [1.2.1] - 2026-02-22
+
+### 🐛 Bug Fixes
+
+* Fixed missing "Expected Output:" label in ReAct prompt template
+* Output format now properly labeled for better clarity when using prompts
+
+---
+
+## [1.2.0] - 2026-02-18
+
+### 🔧 Improvements
+
+**MCP Now Optional**
+* MCP Server Definition Provider registration is now optional and fails gracefully
+* Language Model Tools registration is now optional and fails gracefully
+* Chat Participant registration is now optional and fails gracefully
+* Extension continues working even when MCP is blocked by enterprise security policies
+* Detailed logging of which features are enabled/disabled at activation
+
+### 📦 New Settings
+
+* `aiPrompts.disableMCP` - Explicitly disable MCP and related features for restricted environments
+  + When enabled, skips: MCP Server Definition Provider, Language Model Tools, @prompts Chat Participant
+  + Core prompts management features (tree view, commands, completion) continue to work
+
+### 🐛 Bug Fixes
+
+* Fixed extension failing to activate when MCP API is not available in VS Code
+* Fixed extension crash when enterprise policies block MCP registration
+
+---
+
 ## [1.1.0] - 2026-01-31
 
 ### 🚀 Major Features
 
 **GitHub Copilot Chat Integration**
 * New `@prompts` chat participant for interacting with your prompt library
-* Commands: `/list`,  `/search`,  `/use`,  `/suggest`,  `/save`
+* Commands: `/list`,     `/search`,     `/use`,     `/suggest`,     `/save`
 * Natural language prompt management directly in Copilot Chat
 
 **MCP Server Auto-Detection**

@@ -8,11 +8,29 @@ import { MCPClient } from '../mcpClient';
  * - List and search prompts
  * - Get specific prompt content
  * - Add new prompts
+ * 
+ * @returns true if tools were registered successfully, false otherwise
  */
 export function registerLanguageModelTools(
   context: vscode.ExtensionContext,
   mcpClient: MCPClient
-): void {
+): boolean {
+  // Check if user explicitly disabled MCP
+  const config = vscode.workspace.getConfiguration('aiPrompts');
+  const mcpDisabled = config.get<boolean>('disableMCP', false);
+  
+  if (mcpDisabled) {
+    console.log('Language Model Tools registration skipped: disabled via aiPrompts.disableMCP setting');
+    return false;
+  }
+
+  try {
+    // Check if LM API is available
+    if (typeof vscode.lm?.registerTool !== 'function') {
+      console.log('Language Model Tools API not available in this VS Code version');
+      return false;
+    }
+
   // Tool: List Prompts
   const listPromptsTool = vscode.lm.registerTool<{ category?: string; search?: string }>(
     'mcp-ai-prompts_listPrompts',
@@ -545,6 +563,18 @@ export function registerLanguageModelTools(
   );
 
   console.log('Language Model Tools registered: listPrompts, getPrompt, searchPrompts, getCategories, getTags, addPrompt, updatePrompt, deletePrompt, improvePrompt');
+  return true;
+  } catch (error) {
+    // LM Tools registration failed - this can happen if:
+    // - Enterprise security policies block LM APIs
+    // - VS Code API changed
+    // - Other runtime issues
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`Language Model Tools registration failed: ${errorMessage}`);
+    console.log('Extension will continue without Language Model Tools');
+    console.log('All other features (prompts management, chat participant, etc.) will work normally');
+    return false;
+  }
 }
 
 /**

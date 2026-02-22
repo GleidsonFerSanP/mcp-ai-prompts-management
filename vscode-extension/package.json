@@ -2,7 +2,7 @@
   "name": "mcp-ai-prompts",
   "displayName": "MCP AI Prompts",
   "description": "Manage and organize your AI prompts with cloud storage support (OneDrive, Google Drive, Dropbox)",
-  "version": "1.1.1",
+  "version": "1.2.2",
   "publisher": "GleidsonFerSanP",
   "license": "MIT",
   "icon": "icon.png",
@@ -549,6 +549,12 @@
           "type": "string",
           "default": "",
           "description": "Custom path to MCP server index.js (leave empty for auto-detection)"
+        },
+        "aiPrompts.disableMCP": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable MCP Server registration and related features (MCP Server Definition Provider, Language Model Tools, Chat Participant). Enable this in restricted enterprise environments where MCP is blocked by security policies. Core prompts management features will continue to work.",
+          "markdownDescription": "Disable MCP Server registration and related features:\n- MCP Server Definition Provider\n- Language Model Tools\n- @prompts Chat Participant\n\n**Use this in restricted enterprise environments** where MCP is blocked by security policies.\n\nCore features (prompts management, tree view, commands) will continue to work."
         },
         "aiPrompts.defaultCategory": {
           "type": "string",

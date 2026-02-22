@@ -44,7 +44,7 @@ Task: {task}
 
 {constraints}
 
-Output Format: {outputFormat}`
+Expected Output: {outputFormat}`
   },
   'few-shot': {
     label: 'Few-Shot',
@@ -62,7 +62,7 @@ Now, complete the following task:
 
 {constraints}
 
-Output Format: {outputFormat}`
+Expected Output: {outputFormat}`
   },
   'chain-of-thought': {
     label: 'Chain-of-Thought (CoT)',
@@ -81,7 +81,7 @@ Think through this step-by-step:
 
 {constraints}
 
-Show your reasoning, then provide the final answer in this format: {outputFormat}`
+Expected Output: {outputFormat}`
   },
   'react': {
     label: 'ReAct (Reasoning + Acting)',
@@ -101,7 +101,7 @@ Final Answer: [Your final response]
 
 {constraints}
 
-{outputFormat}`
+Expected Output: {outputFormat}`
   },
   'tree-of-thought': {
     label: 'Tree-of-Thought (ToT)',
@@ -133,7 +133,7 @@ Select the best path and continue to the solution.
 
 {constraints}
 
-Output Format: {outputFormat}`
+Expected Output: {outputFormat}`
   },
   'custom': {
     label: 'Custom',

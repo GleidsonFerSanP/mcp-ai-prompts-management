@@ -9,24 +9,50 @@ import { MCPClient, Prompt } from '../mcpClient';
  * - @prompts search <query> - Search prompts by name/description
  * - @prompts use <name> - Get a specific prompt to use
  * - @prompts suggest - Get prompt suggestions based on current context
+ * 
+ * @returns true if chat participant was registered successfully, false otherwise
  */
 export function registerChatParticipant(
   context: vscode.ExtensionContext,
   mcpClient: MCPClient
-): void {
-  // Register the chat participant
-  const participant = vscode.chat.createChatParticipant(
-    'mcp-ai-prompts.prompts',
-    async (request, chatContext, stream, token) => {
-      return handleChatRequest(request, chatContext, stream, token, mcpClient);
+): boolean {
+  // Check if user explicitly disabled MCP
+  const config = vscode.workspace.getConfiguration('aiPrompts');
+  const mcpDisabled = config.get<boolean>('disableMCP', false);
+  
+  if (mcpDisabled) {
+    console.log('Chat participant registration skipped: disabled via aiPrompts.disableMCP setting');
+    return false;
+  }
+
+  try {
+    // Check if Chat API is available
+    if (typeof vscode.chat?.createChatParticipant !== 'function') {
+      console.log('Chat participant API not available in this VS Code version');
+      return false;
     }
-  );
 
-  participant.iconPath = new vscode.ThemeIcon('hubot');
+    // Register the chat participant
+    const participant = vscode.chat.createChatParticipant(
+      'mcp-ai-prompts.prompts',
+      async (request, chatContext, stream, token) => {
+        return handleChatRequest(request, chatContext, stream, token, mcpClient);
+      }
+    );
 
-  context.subscriptions.push(participant);
+    participant.iconPath = new vscode.ThemeIcon('hubot');
 
-  console.log('Chat participant @prompts registered');
+    context.subscriptions.push(participant);
+
+    console.log('Chat participant @prompts registered');
+    return true;
+  } catch (error) {
+    // Chat participant registration failed
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`Chat participant registration failed: ${errorMessage}`);
+    console.log('Extension will continue without chat participant');
+    return false;
+  }
 }
 
 /**
